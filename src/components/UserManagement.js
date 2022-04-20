@@ -1,8 +1,11 @@
 import React, { useState } from "react";
+import UsersTab from "./UsersTab";
+import AddUser from "./AddUser";
 
 const UserManagement = () => {
   const [data, setData] = useState([]);
-
+  const [userModal, setUserModal] = useState(false);
+  const [userButton, setUserButton] = useState('Add User');
   const fetchApi = () => {
     let dataFetch = fetch("http://localhost:3000/viewUsers")
       .then((response) => response.json())
@@ -14,24 +17,66 @@ const UserManagement = () => {
         // handle the error
       });
   };
-  
+
+  const createUser = () => {
+    console.log('userModal Init:', userModal);
+    setUserModal(!userModal);
+    if (userButton == 'Add User') {
+      setUserButton('Back');
+    }
+    else {
+      setUserButton('Add User');
+    }
+    console.log('userModal set:', userModal);
+    // getComponent();
+  };
+  let getComponent= () => {
+    console.log(userModal);
+    if (userModal) {  // show the modal if state showModal is true
+      return <AddUser/>;
+    } else {
+      return (
+      <div className="container">
+      <table className="table table-striped table-bordered">
+        <thead>
+          <tr>
+            <td>id</td>
+            <td>Name</td>
+            <td>Email</td>
+            <td>Customer</td>
+            <td>Roles</td>
+            <td>Trial User</td>
+          </tr>
+        </thead>
+        <tbody>{listElement}</tbody>
+      </table></div>);
+    }
+  }
   var listElement = data.userData
     ? data.userData.map((user) => {
-        return <div className="item">{user.name}</div>;
+        return (
+          <tr key={user.id}>
+          <td className="item">{user.id}</td>
+            <td className="item">{user.name}</td>
+            <td className="item">{user.email}</td>
+            <td className="item">{user.customer}</td>
+            <td className="item">{user.roles.toString()}</td>
+            <td className="item">{user.isTrial}</td>
+          </tr>
+        );
       })
     : null;
 
-
-
   return (
     <div className="user-manage">
-      <div className="title">User Manegement</div>
-      <div>{listElement}</div>
-      <button onClick={fetchApi} >Click to load data</button>
+      <UsersTab />
+      <br/>
+      <div className="btn-group"><button className="btn btn-outline-secondary" onClick={fetchApi}>Show User Details</button>
+      <button className="btn btn-outline-secondary" onClick={createUser} label="Action">{userButton}</button>
+      </div>
+      {getComponent()}
     </div>
   );
 };
-
-
 
 export default UserManagement;

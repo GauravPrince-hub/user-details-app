@@ -11,7 +11,7 @@ const Header = () => {
         <GiHamburgerMenu />
       </div>
       <div className="right-items">
-          <MdSettings />
+        <MdSettings />
         <BsThreeDotsVertical />
         <BsFullscreen />
       </div>
