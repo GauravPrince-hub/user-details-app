@@ -1,0 +1,129 @@
+.App {
+  text-align: center;
+}
+body {
+  background-color: #f8f9fa;
+}
+
+.container {
+  background-color: #fff;
+  margin: auto;
+  width: 70%;
+  margin-top: 3rem;
+  padding: 1rem;
+}
+
+/* login css */
+.title {
+  font-size: 16pt;
+  font-weight: bold;
+  color: #484e6a;
+  padding: 1rem;
+}
+
+.input {
+  width: 70%;
+  margin-bottom: 1rem;
+  border: 1px solid #dde3ef;
+  padding: 1rem;
+  background-color: #e7f0fe;
+  border-radius: 3px;
+  box-shadow: 0px 0px 4px #dde3ef;
+}
+
+.button-primary {
+  background-color: #6a9bf4;
+  width: 70%;
+  border: none;
+  border-radius: 2px;
+  color: #fff;
+  font-size: 14pt;
+  padding: 1rem;
+  margin-bottom: 1rem;
+}
+
+.sub-text {
+  margin-bottom: 1rem;
+  color: #777;
+  font-weight: 500;
+}
+
+/* main css */
+
+.side-nav-container {
+  position: absolute;
+  float: left;
+  width: 18%;
+  height: 100%;
+  z-index: 10;
+  background-color: #fff;
+  box-shadow: 0px 0px 4px #999;
+  text-align: left;
+}
+
+.home-container {
+  margin-left: 18%;
+}
+
+/* header section css */
+
+.header {
+  height: 3rem;
+  background-color: #fff;
+  box-shadow: 0px 0px 4px #999;
+  color: #777;
+  /* margin-left: 18%; */
+}
+
+.left-items {
+  float: left;
+  padding: 1rem;
+}
+
+.right-items {
+  float: right;
+  padding: 1rem;
+}
+
+/* side nav css */
+.nav-title {
+  height: 2rem;
+  background-color: #eaedf2;
+  color: #007ac1;
+  font-size: 22pt;
+  font-weight: 700;
+  padding: 0.5rem;
+}
+
+.nav-user {
+  padding: 1rem;
+  color: #777;
+  display: flex;
+}
+
+.nav-user-text {
+  padding: 0.5rem;
+}
+
+.nav-user .image {
+  width: 20%;
+  padding: 0.5rem;
+}
+
+.nav-items-container {
+}
+
+.nav-item {
+  padding: 1rem;
+  color: #777;
+  font-size: 10pt;
+}
+
+/* user management */
+.user-manage{
+text-align: left;
+}
+
+.user-manage .title {
+
+}
