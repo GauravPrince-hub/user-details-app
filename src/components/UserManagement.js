@@ -1,11 +1,18 @@
 import React, { useState } from "react";
 import UsersTab from "./UsersTab";
 import AddUser from "./AddUser";
+import { AiOutlineEye } from "react-icons/ai";
+import { BsPencilSquare } from "react-icons/bs";
+import { TiDeleteOutline } from "react-icons/ti";
+import DeleteUser from "./DeleteUser";
 
 const UserManagement = () => {
   const [data, setData] = useState([]);
   const [userModal, setUserModal] = useState(false);
   const [userButton, setUserButton] = useState('Add User');
+  const [userDetails, setUserDetails] = useState({});
+  const [deleteStatus, setDeleteStatus] = useState(false);
+  let deleteComponent = deleteStatus?<DeleteUser/>:null;
   const fetchApi = () => {
     let dataFetch = fetch("http://localhost:3000/viewUsers")
       .then((response) => response.json())
@@ -18,8 +25,9 @@ const UserManagement = () => {
       });
   };
 
-  const createUser = () => {
-    console.log('userModal Init:', userModal);
+  const createUser = (props) => {
+    console.log('userModal Init:', props);
+    setUserDetails(props);
     setUserModal(!userModal);
     if (userButton == 'Add User') {
       setUserButton('Back');
@@ -31,10 +39,11 @@ const UserManagement = () => {
     // getComponent();
   };
   let getComponent= () => {
-    console.log(userModal);
+    console.log('userDetails in getComponents', userDetails);
     if (userModal) {  // show the modal if state showModal is true
-      return <AddUser/>;
-    } else {
+      return <AddUser key={userDetails} />;
+    }
+    else {
       return (
       <div className="container">
       <table className="table table-striped table-bordered">
@@ -52,6 +61,25 @@ const UserManagement = () => {
       </table></div>);
     }
   }
+
+  let showDelete = (user) => {
+    console.log('userDetails in getComponents', user);
+    setDeleteStatus(!deleteStatus);
+    fetch("http://localhost:3000/deleteUser/" + user.id, {
+      headers: {
+        Accept: "*/*",
+        "Content-Type": "application/json",
+      },
+      method: "DELETE",
+    })
+      .then(function (res) {
+        console.log(res);
+      })
+      .catch(function (res) {
+        console.log(res);
+      });
+    
+  }
   var listElement = data.userData
     ? data.userData.map((user) => {
         return (
@@ -62,6 +90,8 @@ const UserManagement = () => {
             <td className="item">{user.customer}</td>
             <td className="item">{user.roles.toString()}</td>
             <td className="item">{user.isTrial}</td>
+            <td className="item"><AiOutlineEye/> <BsPencilSquare onClick={() => createUser(user)}/> <TiDeleteOutline onClick={() => showDelete(user)}/>
+            </td>
           </tr>
         );
       })
@@ -75,6 +105,7 @@ const UserManagement = () => {
       <button className="btn btn-outline-secondary" onClick={createUser} label="Action">{userButton}</button>
       </div>
       {getComponent()}
+      {deleteComponent}
     </div>
   );
 };
