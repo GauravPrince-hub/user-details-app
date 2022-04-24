@@ -19,3 +19,11 @@ const Home = () => {
 };
 
 export default Home;
+
+// reset                                        - 15 //
+// trial user checkbox                          - 15 //
+// dropdown                                     - 15 //
+// popup on add confirmation/delete successfull - 30
+// refresh after delete                         - 15 //
+// load data oninit                             - 45
+// pass data on edit user                       - 60

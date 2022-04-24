@@ -1,13 +1,17 @@
-import{ React, useState } from "react";
-import Popup from 'reactjs-popup';
-import 'reactjs-popup/dist/index.css';
-
+import { React, useState } from "react";
+import Popup from "reactjs-popup";
+import "reactjs-popup/dist/index.css";
+import AddUserSuccess from "./AddUserSuccess";
 const AddUser = (props) => {
   const [email, setEmail] = useState("");
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
+  const [trial, setTrial] = useState(false);
   const [userName, setUserName] = useState("");
-  const [roles, setRole] = useState({
+  const [customer,setCustomer]=useState("placeholder");
+  const [addUserStatus, setAddUserStatus] = useState(false);
+  let addUserCommentComponent = addUserStatus?<AddUserSuccess/>:null;
+  const [roles, setRoles] = useState({
     glAdmin: false,
     user: false,
     custAdmin: false,
@@ -42,12 +46,29 @@ const AddUser = (props) => {
       glEng: roles.glEng,
     };
     tempRole[e.target.value] = !roles[e.target.value];
-    setRole(tempRole);
+    setRoles(tempRole);
     // switch (e) {
     //   case "a":
     //     tempRole.glAdmin = true;
     //     break;
     // }
+  };
+
+  const handleReset = () => {
+    setEmail("");
+    setFirstName("");
+    setLastName("");
+    setUserName("");
+    setCustomer("placeholder");
+    setTrial(false);
+    setRoles({
+      glAdmin: false,
+      user: false,
+      custAdmin: false,
+      glRSM: false,
+      glIntSale: false,
+      glEng: false,
+    });
   };
 
   const handleSubmit = (e) => {
@@ -56,7 +77,7 @@ const AddUser = (props) => {
       if (roles[key]) tempRoles.push(key);
     });
     let oData = {
-      customer: "Gleason",
+      customer: customer,
       username: userName,
       email: email,
       firstName: firstName,
@@ -74,6 +95,7 @@ const AddUser = (props) => {
       body: JSON.stringify(oData),
     })
       .then(function (res) {
+        setAddUserStatus(!addUserStatus);
         console.log(res);
       })
       .catch(function (res) {
@@ -81,6 +103,13 @@ const AddUser = (props) => {
       });
   };
 
+  const handleCustomerChange=(e)=>{
+    setCustomer(e.target.value)
+  }
+
+  const handleTrialChange=(e)=>{
+    setTrial(!trial);
+  }
   return (
     <div className="container">
       <form>
@@ -91,17 +120,15 @@ const AddUser = (props) => {
                 Customer
               </label>
               <select
-                className="form-control"
-                placeholder="Select Customer"
-                id="customer"
-              >
-                <option selected disabled>
+                className="form-control" value={customer}
+                onChange={handleCustomerChange}>
+                <option value="placeholder" selected disabled>
                   Select Customer
                 </option>
-                <option>Google</option>
-                <option>Meta</option>
-                <option>Microsoft</option>
-                <option>Netflix</option>
+                <option value="Google">Google</option>
+                <option value="Meta">Meta</option>
+                <option value="Microsoft">Microsoft</option>
+                <option value="Netflix">Netflix</option>
               </select>
             </div>
             <div className="mb-3">
@@ -111,7 +138,6 @@ const AddUser = (props) => {
               <input
                 type="email"
                 className="form-control"
-                id="email"
                 value={email}
                 onChange={handleEmailChange}
                 placeholder="Enter Email address"
@@ -124,7 +150,6 @@ const AddUser = (props) => {
               <input
                 type="text"
                 className="form-control"
-                id="firstname"
                 value={firstName}
                 onChange={handleFirstChange}
                 placeholder="Enter First Name"
@@ -137,7 +162,6 @@ const AddUser = (props) => {
               <input
                 type="text"
                 className="form-control"
-                id="lastname"
                 value={lastName}
                 onChange={handleLastChange}
                 placeholder="Enter Last Name"
@@ -147,10 +171,10 @@ const AddUser = (props) => {
               <input
                 className="form-check-input"
                 type="checkbox"
-                value=""
-                id="flexCheckDefault"
+                checked={trial}
+                onChange={handleTrialChange}
               />
-              <label className="form-check-label" for="flexCheckDefault">
+              <label className="form-check-label">
                 Trial User
               </label>
             </div>
@@ -163,14 +187,13 @@ const AddUser = (props) => {
               <input
                 type="text"
                 className="form-control"
-                id="username"
                 value={userName}
                 onChange={handleUsernameChange}
                 placeholder="Enter Username"
               />
             </div>
             <div>
-              <label className="form-check-label" htmlFor="flexCheckDefault">
+              <label className="form-check-label">
                 Roles
               </label>
               <div className="mb-3">
@@ -178,9 +201,10 @@ const AddUser = (props) => {
                   className="form-check-input"
                   onChange={handleRoleChange}
                   type="checkbox"
+                  checked={roles.glAdmin}
                   value="glAdmin"
                 />
-                <label className="form-check-label" htmlFor="flexCheckDefault">
+                <label className="form-check-label">
                   Global Gleason Admin
                 </label>
               </div>
@@ -189,9 +213,10 @@ const AddUser = (props) => {
                   className="form-check-input"
                   onChange={handleRoleChange}
                   type="checkbox"
+                  checked={roles.user}
                   value="user"
                 />
-                <label className="form-check-label" htmlFor="flexCheckDefault">
+                <label className="form-check-label" >
                   User
                 </label>
               </div>
@@ -200,9 +225,10 @@ const AddUser = (props) => {
                   className="form-check-input"
                   onChange={handleRoleChange}
                   type="checkbox"
+                  checked={roles.custAdmin}
                   value="custAdmin"
                 />
-                <label className="form-check-label" htmlFor="flexCheckDefault">
+                <label className="form-check-label">
                   Customer Admin
                 </label>
               </div>
@@ -211,9 +237,10 @@ const AddUser = (props) => {
                   className="form-check-input"
                   onChange={handleRoleChange}
                   type="checkbox"
+                  checked={roles.glRSM}
                   value="glRSM"
                 />
-                <label className="form-check-label" htmlFor="flexCheckDefault">
+                <label className="form-check-label" >
                   Gleason Regional Sales Manager(RSM)
                 </label>
               </div>
@@ -223,8 +250,8 @@ const AddUser = (props) => {
                   onChange={handleRoleChange}
                   type="checkbox"
                   value="glIntSale"
-                />
-                <label className="form-check-label" htmlFor="flexCheckDefault">
+                  checked={roles.glIntSale} />
+                <label className="form-check-label">
                   Gleason Internal Sales
                 </label>
               </div>
@@ -233,17 +260,22 @@ const AddUser = (props) => {
                   className="form-check-input"
                   onChange={handleRoleChange}
                   type="checkbox"
+                  checked={roles.glEng}
                   value="glEng"
                 />
-                <label className="form-check-label" htmlFor="flexCheckDefault">
+                <label className="form-check-label" >
                   Gleason Engineer/Service Engineer
                 </label>
               </div>
             </div>
           </div>
         </div>
-        <div className="btn-group button-section" id="reset">
-        <button type="button" className="btn btn-outline-danger" >
+        <div className="btn-group button-section" >
+          <button
+            type="button"
+            className="btn btn-outline-danger"
+            onClick={handleReset}
+          >
             Reset
           </button>
           <button
@@ -255,6 +287,7 @@ const AddUser = (props) => {
           </button>
         </div>
       </form>
+      {addUserCommentComponent}
     </div>
   );
 };

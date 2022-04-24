@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import UsersTab from "./UsersTab";
 import AddUser from "./AddUser";
 import { AiOutlineEye } from "react-icons/ai";
@@ -12,18 +12,40 @@ const UserManagement = () => {
   const [userButton, setUserButton] = useState('Add User');
   const [userDetails, setUserDetails] = useState({});
   const [deleteStatus, setDeleteStatus] = useState(false);
+  const [userLoaded, setUserLoaded] = useState(false);
   let deleteComponent = deleteStatus?<DeleteUser/>:null;
-  const fetchApi = () => {
-    let dataFetch = fetch("http://localhost:3000/viewUsers")
-      .then((response) => response.json())
-      .then((userdata) => {
-        console.log(userdata);
-        setData(userdata);
-      })
-      .catch((error) => {
-        // handle the error
-      });
+
+  const fetchApi = async () => {
+    try {
+      let dataFetch = await fetch("http://localhost:3000/viewUsers")
+      let json = await dataFetch.json();
+      return { success: true, data: json };
+      // .then((response) => await response.json())
+      // .then((userdata) => {
+      //   console.log(userdata);
+      //   setData(userdata);
+      // })
+      // .catch((error) => {
+      //   // handle the error
+      // });
+    }
+    catch (error) {
+      console.log(error);
+      return { success: false };
+    }
   };
+
+  useEffect(() => {
+    (async () => {
+      setUserLoaded(false);
+      let res = await fetchApi();
+      if (res.success) {
+        console.log('res data', res.data);
+        setData(res.data);
+        setUserLoaded(true);
+      }
+    })();
+  }, []);
 
   const createUser = (props) => {
     console.log('userModal Init:', props);
@@ -64,7 +86,7 @@ const UserManagement = () => {
 
   let showDelete = (user) => {
     console.log('userDetails in getComponents', user);
-    setDeleteStatus(!deleteStatus);
+    // setDeleteStatus(!deleteStatus);
     fetch("http://localhost:3000/deleteUser/" + user.id, {
       headers: {
         Accept: "*/*",
@@ -74,6 +96,8 @@ const UserManagement = () => {
     })
       .then(function (res) {
         console.log(res);
+        setDeleteStatus(!deleteStatus);
+        fetchApi();
       })
       .catch(function (res) {
         console.log(res);
@@ -101,10 +125,19 @@ const UserManagement = () => {
     <div className="user-manage">
       <UsersTab />
       <br/>
-      <div className="btn-group"><button className="btn btn-outline-secondary" onClick={fetchApi}>Show User Details</button>
+      <div className="btn-group">
       <button className="btn btn-outline-secondary" onClick={createUser} label="Action">{userButton}</button>
       </div>
-      {getComponent()}
+      <div>
+        {userLoaded ? (
+          <div>
+            {getComponent()}
+          </div>
+        ) : (
+          <p>No user found, please try again</p>
+        )}
+      </div>
+      
       {deleteComponent}
     </div>
   );

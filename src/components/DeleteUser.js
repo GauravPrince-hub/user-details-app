@@ -3,7 +3,7 @@ import React from 'react'
 function DeleteUser() {
   return (
     <div>
-      <span> User Deleted Successfully </span>
+      <span> User Deleted Successfully!! </span>
     </div>
   )
 }
